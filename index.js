@@ -8,6 +8,7 @@ const device = new TuyAPI(configTuyapi);
 
 device.on('connected',() => {
   console.log('Connected to device.');
+
 });
 
 device.on('disconnected',() => {
@@ -17,6 +18,7 @@ device.on('disconnected',() => {
 device.on('data', data => {
   console.log('Data from device:', data);
   const status = data.dps['1'];
+  device.set({set: "50", dps: "2"});
 
   console.log('Current status:', status);
 
@@ -36,11 +38,15 @@ var mqttClient = mqtt.connect(configMqtt.url,configMqtt.options);
 mqttClient.on('connect', () => {
   console.log('Connected to MQTT.');
   mqttClient.subscribe('cmd/thermostat/temp')
+
 })
 
 mqttClient.on('message', (topic, message) => {
   if(topic === 'cmd/thermostat/temp') {
     console.log('Message : '+message);
-    device.set({set: "2", dps: "50"});
+
+    device.set({set:40,dps:"2"}).then(result => {
+    console.log('Result of setting status:', result);
+  });
   }
 })
