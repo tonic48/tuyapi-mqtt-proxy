@@ -1,0 +1,24 @@
+{
+  "name": "tuyapi-mqtt-proxy",
+  "version": "1.0.0",
+  "description": "Tuyapi MQTT Proxy",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tonic48/tuyapi-mqtt-proxy.git"
+  },
+  "keywords": [
+    "tuyapi",
+    "mqtt",
+    "proxy"
+  ],
+  "author": "A.Tsyvyan",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/tonic48/tuyapi-mqtt-proxy/issues"
+  },
+  "homepage": "https://github.com/tonic48/tuyapi-mqtt-proxy#readme"
+}
