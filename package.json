@@ -20,5 +20,8 @@
   "bugs": {
     "url": "https://github.com/tonic48/tuyapi-mqtt-proxy/issues"
   },
-  "homepage": "https://github.com/tonic48/tuyapi-mqtt-proxy#readme"
+  "homepage": "https://github.com/tonic48/tuyapi-mqtt-proxy#readme",
+  "dependencies": {
+    "tuyapi": "^3.2.3"
+  }
 }
