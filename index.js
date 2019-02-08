@@ -43,10 +43,11 @@ mqttClient.on('connect', () => {
 
 mqttClient.on('message', (topic, message) => {
   if(topic === 'cmd/thermostat/temp') {
-    console.log('Message : '+message);
-
-    device.set({set:40,dps:"2"}).then(result => {
-    console.log('Result of setting status:', result);
-  });
+    var setTemp = parseInt(message)
+    console.log('Set temperature to : '+setTemp);
+    if(setTemp>=10 && setTemp<=70){
+      device.set({set:parseInt(message),dps:"2"}).then(result => {
+    });
+    }
   }
 })
