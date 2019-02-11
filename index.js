@@ -39,11 +39,9 @@ device.on('data', data => {
     }
 
     //mqttClient.publish(""+topics[key],payload);
-    publishMqtt(""+topics[key],payload);
-
+    publishMqtt(""+topics.stat[key],payload);
 
    }
-
 
 });
 
@@ -61,6 +59,16 @@ device.connect();
 
 mqttClientDaemon.on('connect', () => {
   console.log('Connected to MQTT.');
+  for(var key in topics.cmd) {
+
+    var cmdTopic=""+topics.cmd[key]
+    console.log("Subscribed to "+cmdTopic);
+    mqttClientDaemon.subscribe(cmdTopic,()=>{
+          //console.log("Subscribed to "+key);
+    })
+  }
+
+  /*
   mqttClientDaemon.subscribe('cmd/floor_thermostat/temp_set',()=>{
         console.log('Subscribed to cmd/floor_thermostat/temp_set');
   })
@@ -70,6 +78,10 @@ mqttClientDaemon.on('connect', () => {
   mqttClientDaemon.subscribe('cmd/floor_thermostat/temp_manual',()=>{
         console.log('Subscribed to cmd/floor_thermostat/temp_manual');
   })
+  mqttClientDaemon.subscribe('stat/floor_thermostat/lock',()=>{
+        console.log('Subscribed to stat/floor_thermostat/lock');
+  })
+  */
 
 })
 
