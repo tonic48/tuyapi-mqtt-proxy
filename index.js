@@ -67,6 +67,9 @@ mqttClientDaemon.on('connect', () => {
   mqttClientDaemon.subscribe('cmd/floor_thermostat/eco',()=>{
         console.log('Subscribed to cmd/floor_thermostat/eco');
   })
+  mqttClientDaemon.subscribe('cmd/floor_thermostat/temp_manual',()=>{
+        console.log('Subscribed to cmd/floor_thermostat/temp_manual');
+  })
 
 })
 
@@ -88,6 +91,11 @@ mqttClientDaemon.on('message', (topic, message) => {
     device.set({set:mode,dps:"5"}).then(result => {
     });
     //device.get({dps: "2"});
+  }
+  if(topic === 'cmd/floor_thermostat/temp_manual') {
+    console.log('Manual mode : '+message);
+      device.set({set:mode,dps:"4"}).then(result => {
+    });
   }
 })
 
