@@ -1,5 +1,5 @@
 const TuyAPI = require('tuyapi');
-var mqtt = require('mqtt')
+const mqtt = require('mqtt')
 
 const configTuyapi = require("./conf/tuyapi.json");
 const configMqtt = require("./conf/mqtt.json");
@@ -24,6 +24,12 @@ device.on('data', data => {
   for(var key in data.dps) {
    payload=""+data.dps[key];
    switch (key){
+     case '1':
+     payload='OFF'
+      if(data.dps[key]){
+         payload='ON'
+      }
+      break;
      case '2':
      case '3':
      case '102':
@@ -36,6 +42,7 @@ device.on('data', data => {
       if(data.dps[key]){
          payload='ON'
       }
+      break;
     }
 
     //mqttClient.publish(""+topics[key],payload);
@@ -68,20 +75,6 @@ mqttClientDaemon.on('connect', () => {
     })
   }
 
-  /*
-  mqttClientDaemon.subscribe('cmd/floor_thermostat/temp_set',()=>{
-        console.log('Subscribed to cmd/floor_thermostat/temp_set');
-  })
-  mqttClientDaemon.subscribe('cmd/floor_thermostat/eco',()=>{
-        console.log('Subscribed to cmd/floor_thermostat/eco');
-  })
-  mqttClientDaemon.subscribe('cmd/floor_thermostat/temp_manual',()=>{
-        console.log('Subscribed to cmd/floor_thermostat/temp_manual');
-  })
-  mqttClientDaemon.subscribe('stat/floor_thermostat/lock',()=>{
-        console.log('Subscribed to stat/floor_thermostat/lock');
-  })
-  */
 
 })
 
@@ -109,6 +102,17 @@ mqttClientDaemon.on('message', (topic, message) => {
       device.set({set:mode,dps:"4"}).then(result => {
     });
   }
+  if(topic === 'cmd/floor_thermostat/active') {
+    console.log('Active : '+message);
+    var mode= true;
+    if(parseInt(message)==0){
+      mode=false;
+    }
+    device.set({set:mode,dps:"1"}).then(result => {
+    });
+    //device.get({dps: "2"});
+    //getSetTemp();
+  }
 })
 
 
@@ -120,4 +124,11 @@ async function publishMqtt(topic,payload){
         mqttClient.end();
     })
 
+}
+
+async function getSetTemp(){
+  device.get().then(status => {
+      console.log('New status:', status);
+      return;
+  });
 }
