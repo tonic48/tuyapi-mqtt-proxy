@@ -3,11 +3,11 @@ tuyapi-mqtt-proxy [![Build Status](https://travis-ci.org/tonic48/tuyapi-mqtt-pro
 
 Rqdirects payload from Tuya floor thermostat to MQTT and vice versa.
 
-### Installation
+#### Installation
 
-### Setup
+#### Setup
 
-### Usage
+#### Usage
 
 #### OpenHAB setup
 
