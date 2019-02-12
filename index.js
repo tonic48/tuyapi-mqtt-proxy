@@ -4,6 +4,14 @@ const mqtt = require('mqtt')
 const configTuyapi = require("./conf/tuyapi.json");
 const configMqtt = require("./conf/mqtt.json");
 const topics = require("./conf/topics.json");
+//define dps constants
+const DPS_ACTIVE='1';
+const DPS_SET_TEMP='2'
+const DPS_TEMP_ENV='3'
+const DPS_TEMP_MANUAL='4'
+const DPS_ECO='5'
+const DPS_LOCK='6'
+const DPS_TEMP_FLOOR='102'
 
 const device = new TuyAPI(configTuyapi);
 
@@ -22,32 +30,7 @@ device.on('data', data => {
   //console.log('Current status:', status);
   var payload="";
   for(var key in data.dps) {
-   payload=""+data.dps[key];
-   switch (key){
-     case '1':
-     payload='OFF'
-      if(data.dps[key]){
-         payload='ON'
-      }
-      break;
-     case '2':
-     case '3':
-     case '102':
-     console.log('Payload:', parseFloat(data.dps[key])/2);
-     payload=""+parseFloat(data.dps[key])/2;
-        break;
-
-     case '5':
-     payload='OFF'
-      if(data.dps[key]){
-         payload='ON'
-      }
-      break;
-    }
-
-    //mqttClient.publish(""+topics[key],payload);
-    publishMqtt(""+topics.stat[key],payload);
-
+    publishMqtt(""+topics.stat[key],getDevicePayload(key,data.dps[key]));
    }
 
 });
@@ -57,62 +40,26 @@ device.on('error',(err) => {
 });
 
 var mqttClientDaemon=mqtt.connect(configMqtt.url,configMqtt.options);
-
 device.connect();
 
 // Disconnect after 10 seconds
-//setTimeout(() => { device.disconnect(); }, 100000);
-
+//setTimeout(() => { device.disconnect(); }, 10000);
 
 mqttClientDaemon.on('connect', () => {
   console.log('Connected to MQTT.');
+  //subsribe to all topics defined in topics.json
   for(var key in topics.cmd) {
-
     var cmdTopic=""+topics.cmd[key]
     console.log("Subscribed to "+cmdTopic);
     mqttClientDaemon.subscribe(cmdTopic,()=>{
-          //console.log("Subscribed to "+key);
+        //console.log("Subscribed to "+key);
     })
   }
-
 
 })
 
 mqttClientDaemon.on('message', (topic, message) => {
-  if(topic === 'cmd/floor_thermostat/temp_set') {
-    var setTemp = parseFloat(message)*2
-    console.log('Set temperature to : '+setTemp);
-    if(setTemp>=10 && setTemp<=70){
-      device.set({set:setTemp,dps:"2"}).then(result => {
-      });
-    }
-  }
-  if(topic === 'cmd/floor_thermostat/eco') {
-    console.log('Eco mode : '+message);
-    var mode= true;
-    if(parseInt(message)==0){
-      mode=false;
-    }
-    device.set({set:mode,dps:"5"}).then(result => {
-    });
-    //device.get({dps: "2"});
-  }
-  if(topic === 'cmd/floor_thermostat/temp_manual') {
-    console.log('Manual mode : '+message);
-      device.set({set:mode,dps:"4"}).then(result => {
-    });
-  }
-  if(topic === 'cmd/floor_thermostat/active') {
-    console.log('Active : '+message);
-    var mode= true;
-    if(parseInt(message)==0){
-      mode=false;
-    }
-    device.set({set:mode,dps:"1"}).then(result => {
-    });
-    //device.get({dps: "2"});
-    //getSetTemp();
-  }
+  sendPayloadToDevice(topic, message);
 })
 
 async function publishMqtt(topic,payload){
@@ -125,9 +72,75 @@ async function publishMqtt(topic,payload){
 
 }
 
-async function getSetTemp(){
-  device.get().then(status => {
-      console.log('New status:', status);
-      return;
-  });
+function getDevicePayload(key, data){
+  payload=""+data;
+  switch (key){
+
+    case DPS_ACTIVE:
+    case DPS_ECO:
+    case DPS_LOCK:
+     payload = (data ? "1" : "0");
+     break;
+
+    case DPS_SET_TEMP:
+    case DPS_TEMP_ENV:
+    case DPS_TEMP_FLOOR:
+    console.log('Payload:', parseFloat(data)/2);
+    payload=""+parseFloat(data)/2;
+       break;
+   }
+
+   return payload;
+}
+
+async function sendPayloadToDevice(topic, message){
+  if(topic === topics.cmd[DPS_SET_TEMP]) {
+    //Set temperature topic
+    var setTemp = parseFloat(message)*2
+    console.log('Set temperature to : '+setTemp);
+    if(setTemp>=10 && setTemp<=70){
+      device.set({set:setTemp,dps:DPS_SET_TEMP}).then(result => {
+      });
+    }
+  }
+  if(topic === topics.cmd[DPS_ECO]) {
+    //Eco mode topic
+    console.log('Eco mode : '+message);
+    var mode= true;
+    if(parseInt(message)==0){
+      mode=false;
+    }
+    device.set({set:mode,dps:DPS_ECO}).then(result => {
+    });
+    //device.get({dps: "2"});
+  }
+  if(topic === topics.cmd[DPS_TEMP_MANUAL]) {
+    //Auto/Manual mode topic
+    mode=""+message;
+    console.log('Manual mode : '+message);
+      device.set({set:mode,dps:DPS_TEMP_MANUAL}).then(result => {
+    });
+  }
+  if(topic === topics.cmd[DPS_ACTIVE]) {
+    //Device active topic
+    console.log('Active : '+message);
+    var mode= true;
+    if(parseInt(message)==0){
+      mode=false;
+    }
+    device.set({set:mode,dps:DPS_ACTIVE}).then(result => {
+    });
+
+  }
+  if(topic === topics.cmd[DPS_LOCK]) {
+    //Device active topic
+    console.log('Active : '+message);
+    var mode= true;
+    if(parseInt(message)==0){
+      mode=false;
+    }
+    device.set({set:mode,dps:DPS_LOCK}).then(result => {
+    });
+
+  }
 }
