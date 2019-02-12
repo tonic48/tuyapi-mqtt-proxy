@@ -11,6 +11,6 @@ Rqdirects payload from Tuya floor thermostat to MQTT and vice versa.
 
 ## OpenHAB setup
 
-# Development
+### Development
 
 
