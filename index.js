@@ -115,7 +115,6 @@ mqttClientDaemon.on('message', (topic, message) => {
   }
 })
 
-
 async function publishMqtt(topic,payload){
     var mqttClient=mqtt.connect(configMqtt.url,configMqtt.options);
     mqttClient.on('connect', function () {
