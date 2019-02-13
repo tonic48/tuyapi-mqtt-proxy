@@ -13,8 +13,8 @@ const DPS_ECO='5'
 const DPS_LOCK='6'
 const DPS_TEMP_FLOOR='102'
 
-const pubTopics={DPS_ACTIVE,DPS_SET_TEMP,DPS_TEMP_ENV,DPS_TEMP_MANUAL,DPS_ECO,DPS_LOCK,DPS_TEMP_FLOOR};
-const subTopics={DPS_ACTIVE,DPS_SET_TEMP,DPS_TEMP_MANUAL,DPS_ECO,DPS_LOCK};
+const pubDps={DPS_ACTIVE,DPS_SET_TEMP,DPS_TEMP_ENV,DPS_TEMP_MANUAL,DPS_ECO,DPS_LOCK,DPS_TEMP_FLOOR};
+const subDps={DPS_ACTIVE,DPS_SET_TEMP,DPS_TEMP_MANUAL,DPS_ECO,DPS_LOCK};
 
 const device = new TuyAPI(configTuyapi);
 
@@ -161,15 +161,15 @@ async function sendPayloadToDevice(topic, message){
 function getSubTopics(){
 
   var topics = new Object();
- for(var dps in subTopics){
-  topics[getCmdTopic(subTopics[dps])]=configMqtt.qos;
+ for(var dps in subDps){
+  topics[getCmdTopic("cmd",subDps[dps])]=configMqtt.qos;
  }
 
   return topics;
 }
 
-function getCmdTopic(dps){
+function getCmdTopic(prefix,dps){
 
-  var topic="cmd/"+configTuyapi.id+"/"+dps
+  var topic=prefix+"/"+configTuyapi.id+"/"+dps
   return topic;
 }
