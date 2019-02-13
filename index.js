@@ -13,6 +13,9 @@ const DPS_ECO='5'
 const DPS_LOCK='6'
 const DPS_TEMP_FLOOR='102'
 
+const pubTopics={DPS_ACTIVE,DPS_SET_TEMP,DPS_TEMP_ENV,DPS_TEMP_MANUAL,DPS_ECO,DPS_LOCK,DPS_TEMP_FLOOR};
+const subTopics={DPS_ACTIVE,DPS_SET_TEMP,DPS_TEMP_MANUAL,DPS_ECO,DPS_LOCK};
+
 const device = new TuyAPI(configTuyapi);
 
 device.on('connected',() => {
@@ -47,14 +50,24 @@ device.connect();
 
 mqttClientDaemon.on('connect', () => {
   console.log('Connected to MQTT.');
+  mqttTopics = new Object()
   //subsribe to all topics defined in topics.json
   for(var key in topics.cmd) {
-    var cmdTopic=""+topics.cmd[key]
-    console.log("Subscribed to "+cmdTopic);
-    mqttClientDaemon.subscribe(cmdTopic,()=>{
-        //console.log("Subscribed to "+key);
-    })
+    //var cmdTopic=""+topics.cmd[key]
+    mqttTopics[topics.cmd[key]]=0;
+    //console.log("Subscribed to "+cmdTopic);
+    
   }
+
+  var line=JSON.stringify(getSubTopics());
+  console.log(line);
+  mqttClientDaemon.subscribe(mqttTopics,(err, granted)=>{
+    if(!err){
+      console.log("Subscribed to ");
+      for(var key in granted) console.log(granted[key]);
+    }
+    
+  })
 
 })
 
@@ -143,4 +156,20 @@ async function sendPayloadToDevice(topic, message){
     });
 
   }
+}
+
+function getSubTopics(){
+
+  var topics = new Object();
+ for(var dps in subTopics){
+  topics[getCmdTopic(subTopics[dps])]=configMqtt.qos;
+ }
+
+  return topics;
+}
+
+function getCmdTopic(dps){
+
+  var topic="cmd/"+configTuyapi.id+"/"+dps
+  return topic;
 }

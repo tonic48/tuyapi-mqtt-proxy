@@ -3,5 +3,6 @@
   {
     "username":"openhabian",
     "password":"openhabian"
-  }
+  },
+  "qos":0
 }

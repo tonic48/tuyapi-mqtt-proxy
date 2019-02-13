@@ -2,6 +2,8 @@ tuyapi-mqtt-proxy [![Build Status](https://travis-ci.org/tonic48/tuyapi-mqtt-pro
 ===========================
 
 Rqdirects payload from Tuya floor thermostat to MQTT and vice versa.
+The proxi will create persistent connection to the device and redirect all data from the device to MQTT stat topics
+Also it will subscribe to cmd topics and redirect commands to the device
 
 #### Installation
 
