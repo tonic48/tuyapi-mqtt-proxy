@@ -68,8 +68,14 @@ device.connect();
 
 mqttClientDaemon.on('connect', () => {
   console.log('Connected to MQTT.');
-  mqttClientDaemon.subscribe(getSubTopics(), (err, granted) => {
-    if (!err) {
+  mqttTopics = new Object()
+  //subsribe to all cmd topics defined in topics.json
+  for(var key in topics.cmd) mqttTopics[topics.cmd[key]]=0;
+
+  var line=JSON.stringify(getSubTopics());
+  console.log(line);
+  mqttClientDaemon.subscribe(mqttTopics,(err, granted)=>{
+    if(!err){
       console.log("Subscribed to ");
       for (var key in granted) console.log(granted[key]);
     }
