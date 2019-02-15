@@ -99,8 +99,8 @@ class TuyaItem {
 
 async publishMqtt(topic, payload) {
     var mqttClient = mqtt.connect(configMqtt.url, configMqtt.options);
-    mqttClient.on('connect', function () {
-      mqttClient.publish(topic, payload)
+    mqttClient.on('connect', async function () {
+        mqttClient.publish(topic, payload);
       //debug('Published:',payload);
       mqttClient.end();
     })
@@ -108,7 +108,7 @@ async publishMqtt(topic, payload) {
   }
   
 getDevicePayload(key, data) {
-    var payload = data.toString;
+    var payload = data.toString();
     switch (key) {
   
       case DPS_ACTIVE:
