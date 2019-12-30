@@ -1,0 +1,17 @@
+{
+  "name": "tuyapi-mqtt-proxy",
+  "version": "1.0.0",
+  "description": "tuyapi-mqtt-proxy [![Build Status](https://travis-ci.org/tonic48/tuyapi-mqtt-proxy.svg?branch=master)](https://travis-ci.org//tonic48/tuyapi-mqtt-proxy) [![XO code style](https://img.shields.io/badge/code_style-XO-5ed9c7.svg)](https://github.com/xojs/xo)\r ===========================",
+  "main": "index.js",
+  "dependencies": {
+    "mqtt": "^2.18.8",
+    "tuyapi": "^3.2.3"
+  },
+  
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC"
+}
