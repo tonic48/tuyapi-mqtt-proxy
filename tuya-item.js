@@ -44,6 +44,7 @@ class TuyaItem {
             debug('Data from device:', data);
             //const status = data.dps['1'];
             //debug('Current status:', status);
+            console.log('DATA from device: ', data);
             var payload = "";
             Object.keys(data.dps).forEach(key=>{
               this.publishMqtt(this.getTopicName("stat", key), this.getDevicePayload(key, data.dps[key])).then(result => {
@@ -84,6 +85,9 @@ class TuyaItem {
           });
           
           mqttClientDaemon.on('message', (topic, message) => {
+            if(!device.isConnected()){
+              device.connect();
+            }
             this.sendPayloadToDevice(topic, message).then(result => {
               //debug('Command sent to the device');
             }).catch(error => {
