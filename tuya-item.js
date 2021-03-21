@@ -44,7 +44,6 @@ class TuyaItem {
             debug('Data from device:', data);
             //const status = data.dps['1'];
             //debug('Current status:', status);
-            console.log('DATA from device: ', data);
             var payload = "";
             Object.keys(data.dps).forEach(key=>{
               this.publishMqtt(this.getTopicName("stat", key), this.getDevicePayload(key, data.dps[key])).then(result => {
