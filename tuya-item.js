@@ -53,7 +53,10 @@ class TuyaItem {
               });
             });
           
-          });
+          }).catch(error => {
+
+          });          
+          ;
     
           device.on('error', (err) => {
             debug('Error: ' + err);
@@ -93,8 +96,6 @@ class TuyaItem {
               debug('Error : ' + error);
             });
           })
-    
-          
           //Establish connection to Tuya device
           device.connect();
 
